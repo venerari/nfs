@@ -1,0 +1,35 @@
+---
+
+- name: variables initialization
+  hosts: all
+  any_errors_fatal: true
+  tasks:
+    - include_vars:
+        file: "{{ item }}"
+      with_items:
+        - "group_vars/{{env}}/vault.yml"
+        - "group_vars/{{env}}/vars.yml"
+  tags: always
+  
+    
+- name: nfs-server
+  hosts: sib-nfs-server
+  become: yes    
+  any_errors_fatal: true
+  roles: 
+    - common
+  vars:
+    task_type: nfs-server
+  tags:
+    - nfs-server 
+
+- name: nfs-client
+  hosts: sib-nfs-client
+  become: yes    
+  any_errors_fatal: true
+  roles: 
+    - common
+  vars:
+    task_type: nfs-client
+  tags:
+    - nfs-client       

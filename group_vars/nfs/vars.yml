@@ -1,0 +1,12 @@
+---
+
+# env (defined in extra-vars)
+
+# app/user 
+app_dir: "/{{env}}app_01"
+app_user: "{{env}}app1"
+
+
+nfs_shared: /swstage
+nfs_exports: "{{nfs_shared}} {{hostvars[groups['sib-nfs-client'][0]]['ansible_default_ipv4']['address']}}(rw,async) {{hostvars[groups['sib-nfs-client'][1]]['ansible_default_ipv4']['address']}}(rw,async)"
+nfs_fstab: "{{hostvars[groups['sib-nfs-server'][0]]['ansible_default_ipv4']['address']}}:{{nfs_shared}} {{nfs_shared}} nfs rw,async 0 0"

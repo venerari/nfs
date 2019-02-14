@@ -1,0 +1,25 @@
+---
+
+- name: create directory /swstage
+  file:
+    path: "{{nfs_shared}}"
+    state: directory    
+    
+- name: backup fstab
+  copy:
+    src: /etc/fstab
+    dest: "/etc/fstab_{{ '%Y-%m-%d' | strftime }}"
+    
+- name: Insert to fstab
+  lineinfile:
+    path: /etc/fstab
+    line: "{{nfs_fstab}}"        
+  
+- name: mount nfs
+  mount: 
+    name: "{{nfs_shared}}"
+    src: "{{hostvars[groups['sib-nfs-server'][0]]['ansible_default_ipv4']['address']}}:{{nfs_shared}}"
+    state: mounted
+    fstype: nfs
+    opts: rw,async 
+    

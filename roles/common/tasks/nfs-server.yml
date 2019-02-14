@@ -1,0 +1,38 @@
+---
+
+- name: Ensure rpcbind is running as configured
+  service:
+    name: rpcbind
+    state: started
+    enabled: true
+
+- name: Ensure nfs-server is running
+  service:
+    name: nfs-server
+    state: started
+    enabled: true
+    
+- name: create directory /swstage
+  file:
+    path: "{{nfs_shared}}"
+    state: directory 
+    mode: 0777
+    
+- name: backup exports
+  copy:
+    src: /etc/exports
+    dest: "/etc/exports_{{ '%Y-%m-%d' | strftime }}"    
+    
+- name: Insert the exported client to /etc/exports
+  lineinfile:
+    path: /etc/exports
+    line: "{{nfs_exports}}" 
+    
+- name: exportfs
+  shell: exportfs -r       
+       
+- name: Restart nfs-server
+  service:
+    name: nfs-server
+    state: restarted   
+        

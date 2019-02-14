@@ -1,0 +1,7 @@
+---
+
+- include_tasks: nfs-server.yml
+  when: task_type | default("") == "nfs-server"    
+
+- include_tasks: nfs-client.yml
+  when: task_type | default("") == "nfs-client"      
